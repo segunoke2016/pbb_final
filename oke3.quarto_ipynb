@@ -1,0 +1,351 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "---\n",
+        "title: \"GAPMINDER | LIFE EXPECTANCIES 2002\"  \n",
+        "format: dashboard\n",
+        "#execute:\n",
+        " #  echo: false\n",
+        "  #output: false\n",
+        "---"
+      ],
+      "id": "fe805ce0"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "import pandas as pd\n",
+        "import plotly.express as px\n",
+        "import itables"
+      ],
+      "id": "d26290f7",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "# Load the data\n",
+        "gap = px.data.gapminder()\n",
+        "\n",
+        "# Filter for year 2002\n",
+        "gap_02 = gap.query(\"year == 2002\")\n",
+        "\n",
+        "# Compute highest life expectancy\n",
+        "avg_life = gap_02.groupby(\"year\")[\"lifeExp\"].mean().reset_index()\n",
+        "fig_life_exp = px.line(\n",
+        "    avg_life,\n",
+        "    x=\"year\",\n",
+        "    y=\"lifeExp\",\n",
+        "    title=\"Average Life Expectancy Over Time\"\n",
+        ")\n",
+        "#fig_life_exp.show()\n",
+        "\n",
+        "# Compute lowest life expectancy\n",
+        "fig_gdp_lifexp = px.scatter(\n",
+        "    gap_02[gap_02[\"year\"] == 2002],\n",
+        "    x=\"gdpPercap\",\n",
+        "    y=\"lifeExp\",\n",
+        "    size=\"pop\",\n",
+        "    color=\"continent\",\n",
+        "    hover_name=\"country\",\n",
+        "    log_x=True,\n",
+        "    title=\"GDP vs Life Expectancy\"\n",
+        ")\n",
+        "#fig.show()\n",
+        "\n",
+        "# Create the map using plotly express with a blue color scale\n",
+        "map_fig = px.choropleth(\n",
+        "    gap_02[gap_02[\"year\"] == 2002],\n",
+        "    locations=\"iso_alpha\",\n",
+        "    color=\"lifeExp\",\n",
+        "    hover_name=\"country\",\n",
+        "    title=\"Global Life Expectancy Map\",\n",
+        "    color_continuous_scale=\"Blues\",\n",
+        ").update_layout(coloraxis_showscale=False)\n",
+        "#fig.show()\n",
+        "\n",
+        "\n",
+        "# Compute highest life expectancy\n",
+        "highest_row = gap_02.sort_values(\"lifeExp\", ascending=False).head(1).squeeze()\n",
+        "highest_life_exp_country = highest_row[\"country\"]\n",
+        "highest_life_exp_value = round(highest_row[\"lifeExp\"], 1)\n",
+        "\n",
+        "# Compute lowest life expectancy\n",
+        "lowest_row = gap_02.sort_values(\"lifeExp\", ascending=True).head(1).squeeze()\n",
+        "lowest_life_exp_country = lowest_row[\"country\"]\n",
+        "lowest_life_exp_value = round(lowest_row[\"lifeExp\"], 1)\n",
+        "\n",
+        "# Compute average (population-weighted) life expectancy\n",
+        "weighted_mean = (gap_02[\"lifeExp\"] * gap_02[\"pop\"]).sum() / gap_02[\"pop\"].sum()\n",
+        "average_life_exp_value = round(weighted_mean, 1)\n",
+        "\n",
+        "\n",
+        "# Largest 20 countries by Life Expectancy (bar chart) with a blue color scale\n",
+        "top_20 = gap_02.nlargest(20, \"pop\").sort_values(\"lifeExp\", ascending=True)\n",
+        "bar_fig = px.bar(\n",
+        "    top_20,\n",
+        "    x=\"lifeExp\",\n",
+        "    y=\"country\",\n",
+        "    title=\"Life Expectancy in 20 Largest Countries\",\n",
+        "    color=\"lifeExp\",\n",
+        "    color_continuous_scale=\"Blues\",\n",
+        ").update_layout(coloraxis_showscale=False)"
+      ],
+      "id": "42cbc93f",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "# Create regional summary\n",
+        "reg_sum = (\n",
+        "    gap_02.groupby(\"continent\")\n",
+        "    .apply(\n",
+        "        lambda g: pd.Series(\n",
+        "            {\n",
+        "                \"Average Life Expectancy\": g[\"lifeExp\"].mean(),\n",
+        "                \"Lowest Life Expectancy\": g[\"lifeExp\"].min(),\n",
+        "                \"Country with Lowest Life Exp\": g.loc[g[\"lifeExp\"].idxmin(), \"country\"],\n",
+        "                \"Highest Life Expectancy\": g[\"lifeExp\"].max(),\n",
+        "                \"Country with Highest Life Exp\": g.loc[\n",
+        "                    g[\"lifeExp\"].idxmax(), \"country\"\n",
+        "                ],\n",
+        "            }\n",
+        "        )\n",
+        "    )\n",
+        "    .round(2)\n",
+        ")\n"
+      ],
+      "id": "43417f6d",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "continent_fig = px.box(\n",
+        "    gap_02,\n",
+        "    x=\"continent\",\n",
+        "    y=\"lifeExp\",\n",
+        "    color=\"continent\",\n",
+        "    title=\"Distribution of Life Expectancy by Continent\",\n",
+        "    points=\"all\",  # This shows all data points\n",
+        "    hover_data=[\"country\"],  # This adds country names to hover info\n",
+        "    color_discrete_sequence=px.colors.sequential.Turbo,  # Built-in Blues palette\n",
+        ").update_layout(\n",
+        "    showlegend=False, xaxis_title=\"Continent\", yaxis_title=\"Life Expectancy (years)\"\n",
+        ")"
+      ],
+      "id": "b9541121",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "# HOME\n",
+        "\n",
+        "## Row 1 {height=40%}\n",
+        "\n",
+        "::: {.valuebox icon=\"heart\" color=\"#1E90FF\" title=\"Highest Life Expectancy\"}\n",
+        "\n",
+        "\n",
+        "`{python} str(highest_life_exp_value)`\n",
+        "\n",
+        "`{python} highest_life_exp_country`\n",
+        ":::\n",
+        "\n",
+        "::: {.valuebox icon=\"thermometer\" color=\"#87CEFA\" title=\"Lowest Life Expectancy\"} \n",
+        "\n",
+        "`{python} str(lowest_life_exp_value)`\n",
+        "\n",
+        "`{python} lowest_life_exp_country`\n",
+        "\n",
+        ":::\n",
+        "\n",
+        "::: {.valuebox icon=\"graph-up\" color=\"#4682B4\" title=\"Average Life Expectancy\"}\n",
+        "\n",
+        "`{python} str(average_life_exp_value)`\n",
+        "\n",
+        ":::\n",
+        "\n",
+        "## Row 2 {height=70%}\n",
+        "\n",
+        "### {width=30%}"
+      ],
+      "id": "bad8ff57"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "map_fig"
+      ],
+      "id": "b5fd3dc5",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "### {width=30%}"
+      ],
+      "id": "1f865c3d"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "bar_fig"
+      ],
+      "id": "36763826",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Row 3 {height=\"60%\"}"
+      ],
+      "id": "6d8d33c0"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "fig_life_exp"
+      ],
+      "id": "2a4e0e54",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "### Column  {width=\"30%\"}\n",
+        "\n",
+        "\n",
+        "# REGIONAL\n",
+        "\n",
+        "## Row 1 {height=60%}"
+      ],
+      "id": "6771d3f0"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "itables.show(reg_sum)"
+      ],
+      "id": "7b6014d2",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Row 2 {height=70%}\n"
+      ],
+      "id": "fbd55be9"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "continent_fig"
+      ],
+      "id": "ac0e5f5b",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "### Column {width=\"40%\"}\n",
+        "\n",
+        "## Row 3 {height=\"70%\"}"
+      ],
+      "id": "218f442e"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "fig_gdp_lifexp"
+      ],
+      "id": "58314707",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "### Column {width=\"20%\"}\n",
+        "\n",
+        "Africa shows markedly lower life expectancy figures compared to other continents, reflecting significant developmental challenges.\n",
+        "\n",
+        "Europe and Oceania demonstrate the most consistently high life expectancies, while Asia and the Americas show greater variability, indicating diverse development stages within these regions.\n",
+        "\n",
+        "\n",
+        "# DATA DOWNLOAD"
+      ],
+      "id": "a879820f"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "# Display full dataset with itables\n",
+        "itables.show(gap_02, caption=\"Gapminder Dataset (2002)\", buttons=[\"csvHtml5\"])"
+      ],
+      "id": "ddb4c321",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "# ABOUT\n",
+        "\n",
+        "This data comes from the python `plotly.express` library’s `gapminder` dataset, which is originally sourced from the Gapminder Foundation.\n",
+        "\n",
+        "The Gapminder Foundation is a non-profit venture that promotes sustainable global development and achievement of the United Nations Millennium Development Goals by increasing use and understanding of statistics and other information about social, economic, and environmental development.\n",
+        "\n",
+        "\n",
+        "\n",
+        "**Watch Hans Rosling’s TED Talk:**\n",
+        "\n",
+        "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/hVimVzgtD6w?si=dKHepC5EXhjaXOe2\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>\n",
+        "```"
+      ],
+      "id": "83d342a3"
+    }
+  ],
+  "metadata": {
+    "kernelspec": {
+      "name": "python3",
+      "language": "python",
+      "display_name": "Python 3 (ipykernel)",
+      "path": "c:\\Users\\segun\\Documents\\GitHub\\pbb_final\\.venv\\share\\jupyter\\kernels\\python3"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 5
+}
