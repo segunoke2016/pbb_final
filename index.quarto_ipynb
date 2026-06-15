@@ -12,7 +12,7 @@
         "  #output: false\n",
         "---"
       ],
-      "id": "2204c556"
+      "id": "da928379"
     },
     {
       "cell_type": "code",
@@ -22,7 +22,7 @@
         "import plotly.express as px\n",
         "import itables"
       ],
-      "id": "93a6a90f",
+      "id": "4be17e61",
       "execution_count": null,
       "outputs": []
     },
@@ -97,7 +97,7 @@
         "    color_continuous_scale=\"Blues\",\n",
         ").update_layout(coloraxis_showscale=False)"
       ],
-      "id": "59d8d43b",
+      "id": "f724f0f9",
       "execution_count": null,
       "outputs": []
     },
@@ -124,7 +124,7 @@
         "    .round(2)\n",
         ")\n"
       ],
-      "id": "c014adbc",
+      "id": "74b57bb7",
       "execution_count": null,
       "outputs": []
     },
@@ -145,7 +145,7 @@
         "    showlegend=False, xaxis_title=\"Continent\", yaxis_title=\"Life Expectancy (years)\"\n",
         ")"
       ],
-      "id": "21f8f6ba",
+      "id": "c359aded",
       "execution_count": null,
       "outputs": []
     },
@@ -183,7 +183,7 @@
         "\n",
         "### {width=30%}"
       ],
-      "id": "16e58b04"
+      "id": "bf9931a5"
     },
     {
       "cell_type": "code",
@@ -191,7 +191,7 @@
       "source": [
         "map_fig"
       ],
-      "id": "cf394274",
+      "id": "bc1a8098",
       "execution_count": null,
       "outputs": []
     },
@@ -201,7 +201,7 @@
       "source": [
         "### {width=30%}"
       ],
-      "id": "5512602d"
+      "id": "58cf433b"
     },
     {
       "cell_type": "code",
@@ -209,7 +209,7 @@
       "source": [
         "bar_fig"
       ],
-      "id": "f584ee3c",
+      "id": "b8445e11",
       "execution_count": null,
       "outputs": []
     },
@@ -219,7 +219,7 @@
       "source": [
         "## Row 3 {height=\"60%\"}"
       ],
-      "id": "235dab59"
+      "id": "0ae687eb"
     },
     {
       "cell_type": "code",
@@ -227,7 +227,7 @@
       "source": [
         "fig_gdp_lifexp"
       ],
-      "id": "476c2c70",
+      "id": "13e4e22c",
       "execution_count": null,
       "outputs": []
     },
@@ -242,7 +242,7 @@
         "\n",
         "## Row 1 {height=60%}"
       ],
-      "id": "653141c3"
+      "id": "f98023e6"
     },
     {
       "cell_type": "code",
@@ -250,7 +250,7 @@
       "source": [
         "itables.show(reg_sum)"
       ],
-      "id": "f7b90c74",
+      "id": "8dbc059e",
       "execution_count": null,
       "outputs": []
     },
@@ -260,7 +260,7 @@
       "source": [
         "## Row 2 {height=70%}\n"
       ],
-      "id": "ed19d6e0"
+      "id": "84d7516a"
     },
     {
       "cell_type": "code",
@@ -268,7 +268,7 @@
       "source": [
         "continent_fig"
       ],
-      "id": "2297850f",
+      "id": "600cf225",
       "execution_count": null,
       "outputs": []
     },
@@ -280,7 +280,7 @@
         "\n",
         "## Row 3 {height=\"70%\"}"
       ],
-      "id": "62c5780c"
+      "id": "4e84424b"
     },
     {
       "cell_type": "code",
@@ -288,7 +288,7 @@
       "source": [
         "fig_gdp_lifexp"
       ],
-      "id": "b6e5e455",
+      "id": "9ca90f18",
       "execution_count": null,
       "outputs": []
     },
@@ -305,7 +305,7 @@
         "\n",
         "# DATA DOWNLOAD"
       ],
-      "id": "a4fb09cd"
+      "id": "fabe6dcc"
     },
     {
       "cell_type": "code",
@@ -314,7 +314,7 @@
         "# Display full dataset with itables\n",
         "itables.show(gap_02, caption=\"Gapminder Dataset (2002)\", buttons=[\"csvHtml5\"])"
       ],
-      "id": "4c3c059d",
+      "id": "a0bfcc2d",
       "execution_count": null,
       "outputs": []
     },
@@ -335,7 +335,7 @@
         "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/hVimVzgtD6w?si=dKHepC5EXhjaXOe2\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe>\n",
         "```"
       ],
-      "id": "eaffe8a2"
+      "id": "dfd232b2"
     }
   ],
   "metadata": {
